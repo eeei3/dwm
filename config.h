@@ -17,7 +17,7 @@ static const char col_gray3[]       = "#bbbbbb";
 //current tag and current window font color
 static const char col_gray4[]       = "#eeeeee";
 //Top bar second color (blue) and active window border color
-static const char col_cyan[]        = "#f59542";
+static const char col_cyan[]        = "#ffae00";
 static const char *colors[][3]      = {
 	/*               fg         bg         border   */
 	[SchemeNorm] = { col_gray3, col_gray1, col_gray2 },
@@ -35,7 +35,8 @@ static const Rule rules[] = {
 	 */
 	/* class      instance    title       tags mask     isfloating   monitor */
 	{ "Gimp",     NULL,       NULL,       0,            1,           -1 },
-	{ "Firefox",  NULL,       NULL,       1 << 8,       0,           -1 },
+	{ "Firefox",  NULL,       "Picture-in-Picture",       1 << 8,       1,           -1 },
+    { "Steam",    NULL,       NULL,       0,            1,           -1 },
 };
 
 /* layout(s) */
@@ -52,11 +53,15 @@ static const Layout layouts[] = {
 
 /* key definitions */
 #define MODKEY Mod4Mask
+#define ALTMOD Mod1Mask
 #define TAGKEYS(KEY,TAG) \
 	{ MODKEY,                       KEY,      view,           {.ui = 1 << TAG} }, \
 	{ MODKEY|ControlMask,           KEY,      toggleview,     {.ui = 1 << TAG} }, \
 	{ MODKEY|ShiftMask,             KEY,      tag,            {.ui = 1 << TAG} }, \
-	{ MODKEY|ControlMask|ShiftMask, KEY,      toggletag,      {.ui = 1 << TAG} },
+	{ MODKEY|ControlMask|ShiftMask, KEY,      toggletag,      {.ui = 1 << TAG} }, \
+    { ALTMOD,                       KEY,      focusnthmon,    {.i = TAG} },\
+    { ALTMOD|ShiftMask,             KEY,      tagnthmon,      {.i = TAG} },
+
 
 /* helper for spawning shell commands in the pre dwm-5.0 fashion */
 #define SHCMD(cmd) { .v = (const char*[]){ "/bin/sh", "-c", cmd, NULL } }
@@ -66,11 +71,11 @@ static char dmenumon[2] = "0"; /* component of dmenucmd, manipulated in spawn() 
 static const char *dmenucmd[] = { "dmenu_run", "-m", dmenumon, "-fn", dmenufont, "-nb", col_gray1, "-nf", col_gray3, "-sb", col_cyan, "-sf", col_gray4, NULL };
 //static const char *filemanager[] = { "
 //launches htop
-static const char *monitor[] = { "/usr/bin/htop", NULL };
+static const char *monitor[] = { "/usr/bin/btop", NULL };
 //sets st as the default terminal
 //static const char *termcmd[]  = { "st", NULL };
 //sets urxvt as the default terminal
-static const char *termcmd[]  = { "urxvt", NULL };
+static const char *termcmd[]  = { "alacritty", NULL };
 //volume controls
 static const char *upvol[]   = { "amixer", "-q", "set", "Master", "5%+", "unmute", NULL };
 static const char *downvol[] = { "amixer", "-q", "set", "Master", "5%-", "unmute", NULL };
