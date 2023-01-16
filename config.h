@@ -6,6 +6,7 @@ static const unsigned int gappx     = 5;        /* gaps size between windows */
 static const unsigned int snap      = 32;       /* snap pixel */
 static const int showbar            = 1;        /* 0 means no bar */
 static const int topbar             = 1;        /* 0 means bottom bar */
+static const int focusonwheel       = 0;
 static const char *fonts[]          = { "monospace:size=12", "fontawesome:size=12" };
 static const char dmenufont[]       = "monospace:size=11";
 //background color
@@ -35,7 +36,7 @@ static const Rule rules[] = {
 	 */
 	/* class      instance    title       tags mask     isfloating   monitor */
 	{ "Gimp",     NULL,       NULL,       0,            1<<8,           -1 },
-	{ "Firefox",  NULL,       "Picture-in-Picture",       1 << 8,       True,           -1 },
+	{ "firefox",  NULL,       "Picture-in-Picture", 0,       1,           -1 },
     { "Steam",    NULL,       NULL,       0,            1,           -1 },
 };
 
