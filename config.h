@@ -1,14 +1,13 @@
 /* See LICENSE file for copyright and license details. */
-
 /* appearance */
-static const unsigned int borderpx  = 2;        /* border pixel size of windows */
-static const unsigned int gappx     = 5;        /* gaps size between windows */
-static const unsigned int snap      = 32;       /* snap pixel */
+static const unsigned int borderpx  = 9;        /* border pixel size of windows */
+static const unsigned int gappx     = 15;        /* gaps size between windows */
+static const unsigned int snap      = 100;       /* snap pixel */
 static const int showbar            = 1;        /* 0 means no bar */
 static const int topbar             = 1;        /* 0 means bottom bar */
 static const int focusonwheel       = 0;
-static const char *fonts[]          = { "monospace:size=12", "fontawesome:size=12" };
-static const char dmenufont[]       = "monospace:size=11";
+static const char *fonts[]          = { "monospace:size=25", "fontawesome:size=25" };
+static const char dmenufont[]       = "monospace:size=25";
 //background color
 static const char col_gray1[]       = "#222222";
 //inactive window border color
@@ -27,8 +26,8 @@ static const char *colors[][3]      = {
 
 /* tagging */
 //tag names (upper left)
-static const char *tags[] = { "", "", "", "", "",  "", "", "", "", "" };
-
+static const char *tags[] = { "", "", "", "", "",  "", "", "", "", "" };
+"
 static const Rule rules[] = {
 	/* xprop(1):
 	 *	WM_CLASS(STRING) = instance, class
@@ -74,22 +73,24 @@ static char dmenumon[2] = "0"; /* component of dmenucmd, manipulated in spawn() 
 static const char *dmenucmd[] = { "dmenu_run", "-m", dmenumon, "-fn", dmenufont, "-nb", col_gray1, "-nf", col_gray3, "-sb", col_cyan, "-sf", col_gray4, NULL };
 //static const char *filemanager[] = { "
 //launches htop
-static const char *monitor[] = { "/usr/bin/btop", NULL };
+static const char *monitor[] = { "alacritty", "-e", "btop" };
 //sets st as the default terminal
 //static const char *termcmd[]  = { "st", NULL };
-//sets urxvt as the default terminal
 static const char *termcmd[]  = { "alacritty", NULL };
+//static const char *pulseecmd[] = { "pulseeffects", NULL };
 //volume controls
-static const char *upvol[]   = { "amixer", "-q", "set", "Master", "5%+", "unmute", NULL };
-static const char *downvol[] = { "amixer", "-q", "set", "Master", "5%-", "unmute", NULL };
-static const char *mutevol[] = { "amixer", "-q", "set", "Master", "toggle", NULL };
+static const char *upvol[]   = { "wpctl", "set-volume", "@DEFAULT_AUDIO_SINK@", "5%+", NULL };
+static const char *downvol[] = { "wpctl", "set-volume", "@DEFAULT_AUDIO_SINK@", "5%-", "&&", "wpctl", "set-mute", "@DEFAULT_AUDIO_SINK@", "0", NULL };
+static const char *mutevol[] = { "wpctl", "set-mute", "@DEFAULT_AUDIO_SINK@", "toggle" };
 
 #include "shiftview.c"
+#include <X11/XF86keysym.h>
 static char *endx[] = { "/bin/sh", "-c", "endx", "externalpipe", NULL };
 static Key keys[] = {
 	/* modifier                     key        function        argument */
 	{ MODKEY,                       XK_d,      spawn,          {.v = dmenucmd } },
 	{ MODKEY,	                    XK_Return, spawn,          {.v = termcmd } },
+    { MODKEY|ShiftMask,             XK_Tab,    spawn,          {.v = monitor } },
 	{ MODKEY,                       XK_t,      togglebar,      {0} },
 	{ MODKEY,                       XK_j,      focusstack,     {.i = +1 } },
 	{ MODKEY,                       XK_k,      focusstack,     {.i = -1 } },
@@ -116,9 +117,12 @@ static Key keys[] = {
 	{ MODKEY|ShiftMask,             XK_period, tagmon,         {.i = +1 } },
 	{ MODKEY,              		    XK_n,      shiftview,  	   { .i = +1 } },
 	{ MODKEY,              		    XK_b,      shiftview,      { .i = -1 } },
-    { MODKEY,                       XK_F8,     spawn,          {.v = upvol   } },
-    { MODKEY,                       XK_F7,     spawn,          {.v = downvol } },
-    { MODKEY,                       XK_F5,     spawn,          {.v = mutevol } },
+    { MODKEY,                       XK_F3,     spawn,          {.v = upvol   } },
+    { 0,		 	    XF86XK_AudioMute,	spawn,	{.v = mutevol} },
+    { MODKEY,                       XK_F2,     spawn,          {.v = downvol } },
+    { 0,			    XF86XK_AudioRaiseVolume,   spawn,   {.v = upvol}},
+    { MODKEY,                       XK_F1,     spawn,          {.v = mutevol } },
+    { 0,			    XF86XK_AudioLowerVolume,   spawn,   {.v = downvol}},
 	TAGKEYS(                        XK_1,                      0)
 	TAGKEYS(                        XK_2,                      1)
 	TAGKEYS(                        XK_3,                      2)

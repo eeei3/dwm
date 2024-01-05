@@ -1,18 +1,23 @@
 /* See LICENSE file for copyright and license details. */
-
 /* appearance */
-static const unsigned int borderpx  = 1;        /* border pixel of windows */
-static const unsigned int gappx     = 5;        /* gaps between windows */
-static const unsigned int snap      = 32;       /* snap pixel */
+static const unsigned int borderpx  = 9;        /* border pixel size of windows */
+static const unsigned int gappx     = 15;        /* gaps size between windows */
+static const unsigned int snap      = 100;       /* snap pixel */
 static const int showbar            = 1;        /* 0 means no bar */
 static const int topbar             = 1;        /* 0 means bottom bar */
-static const char *fonts[]          = { "monospace:size=10" };
-static const char dmenufont[]       = "monospace:size=10";
+static const int focusonwheel       = 0;
+static const char *fonts[]          = { "monospace:size=25", "fontawesome:size=25" };
+static const char dmenufont[]       = "monospace:size=25";
+//background color
 static const char col_gray1[]       = "#222222";
+//inactive window border color
 static const char col_gray2[]       = "#444444";
+//font color
 static const char col_gray3[]       = "#bbbbbb";
+//current tag and current window font color
 static const char col_gray4[]       = "#eeeeee";
-static const char col_cyan[]        = "#e69138";
+//Top bar second color (blue) and active window border color
+static const char col_cyan[]        = "#ffae00";
 static const char *colors[][3]      = {
 	/*               fg         bg         border   */
 	[SchemeNorm] = { col_gray3, col_gray1, col_gray2 },
@@ -20,8 +25,9 @@ static const char *colors[][3]      = {
 };
 
 /* tagging */
-static const char *tags[] = { "1", "2", "3", "4", "5", "6", "7", "8", "9" };
-
+//tag names (upper left)
+static const char *tags[] = { "", "", "", "", "",  "", "", "", "", "" };
+"
 static const Rule rules[] = {
 	/* xprop(1):
 	 *	WM_CLASS(STRING) = instance, class
@@ -29,9 +35,10 @@ static const Rule rules[] = {
 	 */
 	/* class      instance    title       tags mask     isfloating   monitor */
 	{ "Gimp",     NULL,       NULL,       0,            1,           -1 },
-	{ "Firefox",  NULL,"Picture-in-Picture",1 << 8,     1,           -1 },
-    { "Discord",  NULL,       NULL,       1 << 8,       1,           -1 },
-    { "Steam",    NULL,       NULL,       1 << 8,       1,           -1 },
+	{ "firefox",  NULL,       "Picture-in-Picture", 0,       1,           -1 },
+    { "firefox",  NULL,       "Library",  0,            1,            -1},
+    { "spectacle", NULL,      NULL,       0,            1,           -1},
+    { "Steam",    NULL,       NULL,       0,            1,           -1 },
 };
 
 /* layout(s) */
@@ -47,14 +54,16 @@ static const Layout layouts[] = {
 };
 
 /* key definitions */
-#define MODKEY Mod1Mask
+#define MODKEY Mod4Mask
+#define ALTMOD Mod1Mask
 #define TAGKEYS(KEY,TAG) \
 	{ MODKEY,                       KEY,      view,           {.ui = 1 << TAG} }, \
 	{ MODKEY|ControlMask,           KEY,      toggleview,     {.ui = 1 << TAG} }, \
 	{ MODKEY|ShiftMask,             KEY,      tag,            {.ui = 1 << TAG} }, \
-    { MODKEY|ControlMask|ShiftMask, KEY,      toggletag,      {.ui = 1 << TAG} }, \
-    { ALTMOD,                        KEY,      focusnthmon,    {.i = TAG} },\
-    { ALTMOD|ShiftMask              KEY,      tagnthmon,      {.i = TAG} },
+	{ MODKEY|ControlMask|ShiftMask, KEY,      toggletag,      {.ui = 1 << TAG} }, \
+    { ALTMOD,                       KEY,      focusnthmon,    {.i = TAG} },\
+    { ALTMOD|ShiftMask,             KEY,      tagnthmon,      {.i = TAG} },
+
 
 /* helper for spawning shell commands in the pre dwm-5.0 fashion */
 #define SHCMD(cmd) { .v = (const char*[]){ "/bin/sh", "-c", cmd, NULL } }
@@ -62,36 +71,58 @@ static const Layout layouts[] = {
 /* commands */
 static char dmenumon[2] = "0"; /* component of dmenucmd, manipulated in spawn() */
 static const char *dmenucmd[] = { "dmenu_run", "-m", dmenumon, "-fn", dmenufont, "-nb", col_gray1, "-nf", col_gray3, "-sb", col_cyan, "-sf", col_gray4, NULL };
-static const char *termcmd[]  = { "st", NULL };
+//static const char *filemanager[] = { "
+//launches htop
+static const char *monitor[] = { "alacritty", "-e", "btop" };
+//sets st as the default terminal
+//static const char *termcmd[]  = { "st", NULL };
+static const char *termcmd[]  = { "alacritty", NULL };
+//static const char *pulseecmd[] = { "pulseeffects", NULL };
+//volume controls
+static const char *upvol[]   = { "wpctl", "set-volume", "@DEFAULT_AUDIO_SINK@", "5%+", NULL };
+static const char *downvol[] = { "wpctl", "set-volume", "@DEFAULT_AUDIO_SINK@", "5%-", "&&", "wpctl", "set-mute", "@DEFAULT_AUDIO_SINK@", "0", NULL };
+static const char *mutevol[] = { "wpctl", "set-mute", "@DEFAULT_AUDIO_SINK@", "toggle" };
 
+#include "shiftview.c"
+#include <X11/XF86keysym.h>
+static char *endx[] = { "/bin/sh", "-c", "endx", "externalpipe", NULL };
 static Key keys[] = {
 	/* modifier                     key        function        argument */
-	{ MODKEY,                       XK_p,      spawn,          {.v = dmenucmd } },
-	{ MODKEY|ShiftMask,             XK_Return, spawn,          {.v = termcmd } },
-	{ MODKEY,                       XK_b,      togglebar,      {0} },
+	{ MODKEY,                       XK_d,      spawn,          {.v = dmenucmd } },
+	{ MODKEY,	                    XK_Return, spawn,          {.v = termcmd } },
+    { MODKEY|ShiftMask,             XK_Tab,    spawn,          {.v = monitor } },
+	{ MODKEY,                       XK_t,      togglebar,      {0} },
 	{ MODKEY,                       XK_j,      focusstack,     {.i = +1 } },
 	{ MODKEY,                       XK_k,      focusstack,     {.i = -1 } },
 	{ MODKEY,                       XK_i,      incnmaster,     {.i = +1 } },
-	{ MODKEY,                       XK_d,      incnmaster,     {.i = -1 } },
+	{ MODKEY,                       XK_u,      incnmaster,     {.i = -1 } },
 	{ MODKEY,                       XK_h,      setmfact,       {.f = -0.05} },
 	{ MODKEY,                       XK_l,      setmfact,       {.f = +0.05} },
-	{ MODKEY,                       XK_Return, zoom,           {0} },
+	{ MODKEY,                       XK_z,	   zoom,           {0} },
 	{ MODKEY,                       XK_Tab,    view,           {0} },
-	{ MODKEY|ShiftMask,             XK_c,      killclient,     {0} },
-	{ MODKEY,                       XK_t,      setlayout,      {.v = &layouts[0]} },
-	{ MODKEY,                       XK_f,      setlayout,      {.v = &layouts[1]} },
-	{ MODKEY,                       XK_m,      setlayout,      {.v = &layouts[2]} },
-	{ MODKEY,                       XK_space,  setlayout,      {0} },
+	{ MODKEY,	                    XK_q,      killclient,     {0} },
+	{ MODKEY|ShiftMask,             XK_t,      setlayout,      {.v = &layouts[0]} },
+	{ MODKEY|ShiftMask,             XK_f,      setlayout,      {.v = &layouts[1]} },
+	{ MODKEY|ShiftMask,             XK_m,      setlayout,      {.v = &layouts[2]} },
+	{ MODKEY|ShiftMask,             XK_space,  setlayout,      {0} },
 	{ MODKEY|ShiftMask,             XK_space,  togglefloating, {0} },
 	{ MODKEY,                       XK_0,      view,           {.ui = ~0 } },
 	{ MODKEY|ShiftMask,             XK_0,      tag,            {.ui = ~0 } },
 	{ MODKEY,                       XK_comma,  focusmon,       {.i = -1 } },
 	{ MODKEY,                       XK_period, focusmon,       {.i = +1 } },
-	{ MODKEY|ShiftMask,             XK_comma,  tagmon,         {.i = -1 } },
-	{ MODKEY|ShiftMask,             XK_period, tagmon,         {.i = +1 } },
 	{ MODKEY,                       XK_minus,  setgaps,        {.i = -1 } },
 	{ MODKEY,                       XK_equal,  setgaps,        {.i = +1 } },
 	{ MODKEY|ShiftMask,             XK_equal,  setgaps,        {.i = 0  } },
+	{ MODKEY|ShiftMask,             XK_comma,  tagmon,         {.i = -1 } },
+	{ MODKEY|ShiftMask,             XK_period, tagmon,         {.i = +1 } },
+	{ MODKEY,              		    XK_n,      shiftview,  	   { .i = +1 } },
+	{ MODKEY,              		    XK_b,      shiftview,      { .i = -1 } },
+    { MODKEY,                       XK_F3,     spawn,          {.v = upvol   } },
+    { 0,		 	    XF86XK_AudioMute,	spawn,	{.v = mutevol} },
+    { MODKEY,                       XK_F2,     spawn,          {.v = downvol } },
+    { 0,			    XF86XK_AudioRaiseVolume,   spawn,   {.v = upvol}},
+    { MODKEY,                       XK_F1,     spawn,          {.v = mutevol } },
+    { 0,			    XF86XK_AudioLowerVolume,   spawn,   {.v = downvol}},
 	TAGKEYS(                        XK_1,                      0)
 	TAGKEYS(                        XK_2,                      1)
 	TAGKEYS(                        XK_3,                      2)

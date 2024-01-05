@@ -4,4 +4,4 @@ drw.outil.o
 config.def.h.bak
 config.def.h.orig
 config.def.h.rej
-
+*.diff
