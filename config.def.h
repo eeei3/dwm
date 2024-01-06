@@ -26,7 +26,7 @@ static const char *colors[][3]      = {
 
 /* tagging */
 //tag names (upper left)
-static const char *tags[] = { "", "", "", "", "",  "", "", "", "", "" };
+static const char *tags[] = { "", "", "", "", "",  "", " 1", " 2", " 3", " 4" };
 
 static const Rule rules[] = {
 	/* xprop(1):
@@ -34,11 +34,14 @@ static const Rule rules[] = {
 	 *	WM_NAME(STRING) = title
 	 */
 	/* class      instance    title       tags mask     isfloating   monitor */
-	{ "Gimp",     NULL,       NULL,       0,            1,           -1 },
-	{ "firefox",  NULL,       "Picture-in-Picture", ~0,       1,           -1 },
-    { "firefox",  NULL,       "Library",  0,            1,            -1},
-    { "spectacle", NULL,      NULL,       0,            1,           -1},
-    { "Steam",    NULL,       NULL,       0,            1,           -1 },
+	{ "Gimp",     NULL,     NULL,       	0,            	1,	-1 },
+	{ "firefox",  NULL,     "Picture-in-Picture", ~0,       1,	-1 },
+	{ "firefox",  NULL,	"Library",  	0,            	1,	-1 },
+	{ "Mail", "thunderbird",	NULL,	  	1>>3,		0,	-1 },
+	{ "discord",  "discord",NULL,	 	1>>5,		0,	-1 },
+	{ "spacefm",  NULL,     NULL,	  	1>>4,            	0,	-1 },
+	{ "spectacle", NULL,    NULL,       	0,            	1,	-1 },
+	{ "Steam",    NULL,     NULL,       	0,            	1,	-1 },
 };
 
 /* layout(s) */
@@ -72,7 +75,7 @@ static const Layout layouts[] = {
 static char dmenumon[2] = "0"; /* component of dmenucmd, manipulated in spawn() */
 static const char *dmenucmd[] = { "dmenu_run", "-m", dmenumon, "-fn", dmenufont, "-nb", col_gray1, "-nf", col_gray3, "-sb", col_cyan, "-sf", col_gray4, NULL };
 //static const char *filemanager[] = { "
-//launches htop
+//launches btop
 static const char *monitor[] = { "alacritty", "-e", "btop" };
 //sets st as the default terminal
 //static const char *termcmd[]  = { "st", NULL };
@@ -84,6 +87,8 @@ static const char *scratchpadcmd[] = {"alacritty", "-t", scratchpadname, "-e", "
 static const char *upvol[]   = { "wpctl", "set-volume", "@DEFAULT_AUDIO_SINK@", "5%+", NULL };
 static const char *downvol[] = { "wpctl", "set-volume", "@DEFAULT_AUDIO_SINK@", "5%-", "&&", "wpctl", "set-mute", "@DEFAULT_AUDIO_SINK@", "0", NULL };
 static const char *mutevol[] = { "wpctl", "set-mute", "@DEFAULT_AUDIO_SINK@", "toggle", NULL };
+static const char *upbright[] = {"/home/josh/dwm/bright.sh", "+", NULL};
+static const char *downbright[] = {"/home/josh/dwm/bright.sh", "-", NULL};
 
 #include "shiftview.c"
 #include <X11/XF86keysym.h>
@@ -108,8 +113,8 @@ static Key keys[] = {
 	{ MODKEY|ShiftMask,             XK_m,      setlayout,      {.v = &layouts[2]} },
 	{ MODKEY|ShiftMask,             XK_space,  setlayout,      {0} },
 	{ MODKEY|ShiftMask,             XK_space,  togglefloating, {0} },
-	{ MODKEY,                       XK_0,      view,           {.ui = ~0 } },
-	{ MODKEY|ShiftMask,             XK_0,      tag,            {.ui = ~0 } },
+	//{ MODKEY,                       XK_0,      view,           {.ui = ~0 } },
+	{ MODKEY|ShiftMask,             XK_w,      tag,            {.ui = ~0 } },
 	{ MODKEY,                       XK_comma,  focusmon,       {.i = -1 } },
 	{ MODKEY,                       XK_period, focusmon,       {.i = +1 } },
 	{ MODKEY,                       XK_minus,  setgaps,        {.i = -1 } },
@@ -126,6 +131,8 @@ static Key keys[] = {
     { MODKEY,                       XK_F1,     spawn,          {.v = mutevol } },
     { 0,			    XF86XK_AudioLowerVolume,   spawn,   {.v = downvol}},
     { MODKEY,			    XK_grave,	togglescratch,	{.v=scratchpadcmd } },
+    { 0,			    	XF86XK_MonBrightnessUp,    spawn,	{.v = upbright}},
+    { 0,			    	XF86XK_MonBrightnessDown,    spawn,	{.v = downbright}},
 	TAGKEYS(                        XK_1,                      0)
 	TAGKEYS(                        XK_2,                      1)
 	TAGKEYS(                        XK_3,                      2)
@@ -135,7 +142,8 @@ static Key keys[] = {
 	TAGKEYS(                        XK_7,                      6)
 	TAGKEYS(                        XK_8,                      7)
 	TAGKEYS(                        XK_9,                      8)
-	{ MODKEY|ShiftMask,             XK_q,      quit,           {0} },
+	TAGKEYS(			XK_0,			   9)
+	{ MODKEY|ShiftMask,             XK_q,      quitprompt,           {0} },
 };
 
 /* button definitions */
