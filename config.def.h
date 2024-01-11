@@ -37,9 +37,9 @@ static const Rule rules[] = {
 	{ "Gimp",     NULL,     NULL,       	0,            	1,	-1 },
 	{ "firefox",  NULL,     "Picture-in-Picture", ~0,       1,	-1 },
 	{ "firefox",  NULL,	"Library",  	0,            	1,	-1 },
-	{ "Mail", "thunderbird",	NULL,	  	1>>3,		0,	-1 },
-	{ "discord",  "discord",NULL,	 	1>>5,		0,	-1 },
-	{ "spacefm",  NULL,     NULL,	  	1>>4,            	0,	-1 },
+	{ "thunderbird",     "Mail",	NULL,	  	1<<3,		0,	-1 },
+	{ "discord",  "discord",NULL,	 	1<<5,		0,	-1 },
+	{ "spacefm",  NULL,     NULL,	  	1<<4,            	0,	-1 },
 	{ "spectacle", NULL,    NULL,       	0,            	1,	-1 },
 	{ "Steam",    NULL,     NULL,       	0,            	1,	-1 },
 };
