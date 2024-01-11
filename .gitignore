@@ -1,9 +1,0 @@
-dwm
-dwm.o
-drw.outil.o
-config.def.h.bak
-config.def.h.orig
-config.def.h.rej
-util.o
-drw.o
-*.diff
