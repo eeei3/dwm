@@ -42,6 +42,7 @@ static const Rule rules[] = {
 	{ "spacefm",  NULL,     NULL,	  	1<<4,            	0,	-1 },
 	{ "spectacle", NULL,    NULL,       	0,            	1,	-1 },
 	{ "Steam",    NULL,     NULL,       	0,            	1,	-1 },
+	{ "URxvt",    "urxvt",  "ranger",	1<<4,		0,	-1 },
 };
 
 /* layout(s) */
@@ -79,7 +80,7 @@ static const char *dmenucmd[] = { "dmenu_run", "-m", dmenumon, "-fn", dmenufont,
 static const char *monitor[] = { "alacritty", "-e", "btop" };
 //sets st as the default terminal
 //static const char *termcmd[]  = { "st", NULL };
-static const char *termcmd[]  = { "alacritty", NULL };
+static const char *termcmd[]  = { "alacritty", "-e", "tmux", NULL };
 static const char scratchpadname[] = "scratchpad";
 static const char *scratchpadcmd[] = {"alacritty", "-t", scratchpadname, "-e", "nvim", NULL };
 //static const char *pulseecmd[] = { "pulseeffects", NULL };
