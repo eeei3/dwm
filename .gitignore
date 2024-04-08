@@ -1,6 +1,7 @@
 dwm
 dwm.o
 drw.outil.o
+config.h
 config.def.h.bak
 config.def.h.orig
 config.def.h.rej

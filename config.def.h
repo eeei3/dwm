@@ -26,7 +26,7 @@ static const char *colors[][3]      = {
 
 /* tagging */
 //tag names (upper left)
-static const char *tags[] = { "", "", "", "", "",  "", " 1", " 2", " 3", " 4" };
+static const char *tags[] = { "1", "2", "", "", "", "",  "", " 1", " 3", " 4" };
 
 static const Rule rules[] = {
 	/* xprop(1):
@@ -34,15 +34,14 @@ static const Rule rules[] = {
 	 *	WM_NAME(STRING) = title
 	 */
 	/* class      instance    title       tags mask     isfloating   monitor */
-	{ "Gimp",     NULL,     NULL,       	0,            	1,	-1 },
+	{ "Gimp",     NULL,     NULL,       	0,            	0,	-1 },
 	{ "firefox",  NULL,     "Picture-in-Picture", ~0,       1,	-1 },
 	{ "firefox",  NULL,	"Library",  	0,            	1,	-1 },
-	{ "thunderbird",     "Mail",	NULL,	  	1<<3,		0,	-1 },
-	{ "discord",  "discord",NULL,	 	1<<5,		0,	-1 },
-	{ "spacefm",  NULL,     NULL,	  	1<<4,            	0,	-1 },
+	{ "thunderbird",     "Mail",	NULL,	  	1<<4,		0,	-1 },
+	{ "discord",  "discord",NULL,	 	1<<6,		0,	-1 },
 	{ "spectacle", NULL,    NULL,       	0,            	1,	-1 },
 	{ "Steam",    NULL,     NULL,       	0,            	1,	-1 },
-	{ "URxvt",    "urxvt",  "ranger",	1<<4,		0,	-1 },
+	{ "URxvt",    "urxvt",  "ranger",	1<<5,		0,	-1 },
 };
 
 /* layout(s) */
@@ -80,7 +79,7 @@ static const char *dmenucmd[] = { "dmenu_run", "-m", dmenumon, "-fn", dmenufont,
 static const char *monitor[] = { "alacritty", "-e", "btop" };
 //sets st as the default terminal
 //static const char *termcmd[]  = { "st", NULL };
-static const char *termcmd[]  = { "alacritty", "-e", "tmux", NULL };
+static const char *termcmd[]  = { "tabbed", "alacritty", "--embed", NULL };
 static const char scratchpadname[] = "scratchpad";
 static const char *scratchpadcmd[] = {"alacritty", "-t", scratchpadname, "-e", "nvim", NULL };
 //static const char *pulseecmd[] = { "pulseeffects", NULL };
